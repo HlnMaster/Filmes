@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ filme.titulo }} - Detalhes</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'home' %}" class="btn-voltar">← Voltar para a lista</a>
+
+        <div class="card-filme">
+            {% if filme.foto %}
+                <img src="{{ filme.foto.url }}" alt="{{ filme.titulo }}">
+            {% else %}
+                <img src="https://via.placeholder.com/180x260?text=Sem+Foto" alt="Sem Foto">
+            {% endif %}
+            <div class="card-conteudo">
+                <h2>{{ filme.titulo }} <span class="genero-tag">{{ filme.genero.nome }}</span></h2>
+                <p><strong>Ano:</strong> {{ filme.ano_lancamento }} | <strong>Duração:</strong> {{ filme.duracao_minutos }} min</p>
+                <p>{{ filme.sinopse }}</p>
+            </div>
+        </div>
+
+        <div class="secao-form">
+            <h3>Deixe sua Avaliação</h3>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn-submit">Enviar Avaliação</button>
+            </form>
+        </div>
+
+        <div class="secao-avaliacoes">
+            <h3>Avaliações ({{ avaliacoes.count }})</h3>
+            {% for avaliacao in avaliacoes %}
+                <div class="card-avaliacao">
+                    <p>
+                        <strong>{{ avaliacao.nome }}</strong> - 
+                        <span class="nota-tag">Nota: {{ avaliacao.nota }}/10</span> 
+                        <small>({{ avaliacao.data_criacao|date:"d/m/Y H:i" }})</small>
+                    </p>
+                    <p>{{ avaliacao.comentario }}</p>
+                </div>
+            {% empty %}
+                <p>Nenhuma avaliação cadastrada para este filme ainda.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

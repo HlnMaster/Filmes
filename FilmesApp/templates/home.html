@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de Filmes</title>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Catálogo de Filmes</h1>
+        <div class="filtro-container">
+            <a href="{% url 'home' %}" class="filtro-btn {% if not genero_selecionado %}ativo{% endif %}">Todos</a>
+            {% for genero in generos %}
+                <a href="?genero={{ genero.id }}" class="filtro-btn {% if genero_selecionado == genero.id|stringformat:'s' %}ativo{% endif %}">
+                    {{ genero.nome }}
+                </a>
+            {% endfor %}
+        </div>
+
+        {% for filme in filmes %}
+            <div class="card-filme">
+                {% if filme.foto %}
+                    <img src="{{ filme.foto.url }}" alt="{{ filme.titulo }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/180x260?text=Sem+Foto" alt="Sem Foto">
+                {% endif %}
+                <div class="card-conteudo">
+                    <h2>{{ filme.titulo }} <span class="genero-tag">{{ filme.genero.nome }}</span></h2>
+                    <p><strong>Ano:</strong> {{ filme.ano_lancamento }} | <strong>Duração:</strong> {{ filme.duracao_minutos }} min</p>
+                    <p>{{ filme.sinopse }}</p>
+                    <a href="{% url 'detalhes_filme' filme.id %}" class="btn-avaliar">⭐ Avaliar / Ver Avaliações</a>
+                </div>
+            </div>
+        {% empty %}
+            <p style="text-align: center;">Nenhum filme cadastrado neste gênero.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
