@@ -1,52 +1,588 @@
 {% load static %}
+
 <!DOCTYPE html>
-<html lang="pt-br">
+
+<html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <title>{{ filme.titulo }} - Detalhes</title>
-    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    {{ filme.titulo }} | CineCatálogo
+</title>
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/estilo.css' %}"
+>
+
+
 </head>
+
 <body>
-    <div class="container">
-        <a href="{% url 'home' %}" class="btn-voltar">← Voltar para a lista</a>
 
-        <div class="card-filme">
-            {% if filme.foto %}
-                <img src="{{ filme.foto.url }}" alt="{{ filme.titulo }}">
-            {% else %}
-                <img src="https://via.placeholder.com/180x260?text=Sem+Foto" alt="Sem Foto">
-            {% endif %}
-            <div class="card-conteudo">
-                <h2>{{ filme.titulo }} <span class="genero-tag">{{ filme.genero.nome }}</span></h2>
-                <p><strong>Ano:</strong> {{ filme.ano_lancamento }} | <strong>Duração:</strong> {{ filme.duracao_minutos }} min</p>
-                <p>{{ filme.sinopse }}</p>
+<!-- =========================================================
+     HEADER
+     ========================================================= -->
+
+<header class="site-header">
+
+
+<div class="header-content">
+
+    <a
+        href="{% url 'home' %}"
+        class="logo"
+    >
+
+        <span>🎬</span>
+
+        CineCatálogo
+
+    </a>
+
+    <span class="logo-subtitle">
+        SEU CATÁLOGO DE FILMES
+    </span>
+
+</div>
+
+
+</header>
+
+<!-- =========================================================
+     CONTEÚDO
+     ========================================================= -->
+
+<main class="container detalhes-container">
+
+
+<!-- =====================================================
+     BOTÃO VOLTAR
+     ===================================================== -->
+
+<a
+    href="{% url 'home' %}"
+    class="btn-voltar"
+>
+    ← Voltar para os filmes
+</a>
+
+
+<!-- =====================================================
+     INFORMAÇÕES PRINCIPAIS DO FILME
+     ===================================================== -->
+
+<section class="detalhes-filme">
+
+
+    <!-- =================================================
+         PÔSTER
+         ================================================= -->
+
+    <div class="detalhes-poster">
+
+        {% if filme.foto %}
+
+            <img
+                src="{{ filme.foto.url }}"
+                alt="Pôster do filme {{ filme.titulo }}"
+            >
+
+        {% else %}
+
+            <div class="poster-sem-imagem">
+
+                <span>🎬</span>
+
+                <small>
+                    Sem imagem
+                </small>
+
             </div>
-        </div>
 
-        <div class="secao-form">
-            <h3>Deixe sua Avaliação</h3>
-            <form method="POST">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn-submit">Enviar Avaliação</button>
-            </form>
-        </div>
+        {% endif %}
 
-        <div class="secao-avaliacoes">
-            <h3>Avaliações ({{ avaliacoes.count }})</h3>
-            {% for avaliacao in avaliacoes %}
-                <div class="card-avaliacao">
-                    <p>
-                        <strong>{{ avaliacao.nome }}</strong> - 
-                        <span class="nota-tag">Nota: {{ avaliacao.nota }}/10</span> 
-                        <small>({{ avaliacao.data_criacao|date:"d/m/Y H:i" }})</small>
-                    </p>
-                    <p>{{ avaliacao.comentario }}</p>
-                </div>
-            {% empty %}
-                <p>Nenhuma avaliação cadastrada para este filme ainda.</p>
-            {% endfor %}
-        </div>
     </div>
+
+
+    <!-- =================================================
+         INFORMAÇÕES
+         ================================================= -->
+
+    <div class="detalhes-info">
+
+
+        <!-- GÊNERO -->
+
+        <span class="detalhes-genero">
+            {{ filme.genero.nome }}
+        </span>
+
+
+        <!-- TÍTULO -->
+
+        <h1>
+            {{ filme.titulo }}
+        </h1>
+
+
+        <!-- =================================================
+             META INFORMAÇÕES
+             ================================================= -->
+
+        <div class="detalhes-meta">
+
+
+            <!-- ANO -->
+
+            <div class="meta-item">
+
+                <span class="meta-icon">
+                    📅
+                </span>
+
+                <div>
+
+                    <small>
+                        Ano
+                    </small>
+
+                    <strong>
+                        {{ filme.ano_lancamento }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- DURAÇÃO -->
+
+            <div class="meta-item">
+
+                <span class="meta-icon">
+                    ⏱️
+                </span>
+
+                <div>
+
+                    <small>
+                        Duração
+                    </small>
+
+                    <strong>
+                        {{ filme.duracao_minutos }} minutos
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- NOTA MÉDIA -->
+
+            {% if media_avaliacoes %}
+
+                <div class="meta-item">
+
+                    <span class="meta-icon">
+                        ⭐
+                    </span>
+
+                    <div>
+
+                        <small>
+                            Avaliação
+                        </small>
+
+                        <strong>
+                            {{ media_avaliacoes|floatformat:1 }}/10
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+        </div>
+
+
+        <!-- =================================================
+             SINOPSE
+             ================================================= -->
+
+        <div class="detalhes-sinopse">
+
+            <span class="section-label">
+                SOBRE O FILME
+            </span>
+
+            <h2>
+                Sinopse
+            </h2>
+
+            <p>
+                {{ filme.sinopse }}
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     TRAILER
+     ===================================================== -->
+
+{% if trailer_embed %}
+
+    <section class="secao-trailer">
+
+
+        <div class="secao-titulo">
+
+            <span class="section-label">
+                MULTIMÍDIA
+            </span>
+
+            <h2>
+                Trailer Oficial
+            </h2>
+
+            <p>
+                Assista ao trailer e confira uma prévia
+                do filme.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             PLAYER DO YOUTUBE
+             ================================================= -->
+
+        <div class="video-container">
+
+            <iframe
+                src="{{ trailer_embed }}"
+                title="Trailer de {{ filme.titulo }}"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+            </iframe>
+
+        </div>
+
+    </section>
+
+{% endif %}
+
+
+<!-- =====================================================
+     FORMULÁRIO DE AVALIAÇÃO
+     ===================================================== -->
+
+<section class="secao-form">
+
+
+    <div class="secao-titulo">
+
+        <span class="section-label">
+            SUA OPINIÃO
+        </span>
+
+        <h2>
+            Deixe sua avaliação
+        </h2>
+
+        <p>
+            Conte para outras pessoas o que você achou
+            deste filme.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         FORMULÁRIO
+         ================================================= -->
+
+    <form
+        method="POST"
+        class="avaliacao-form"
+    >
+
+        {% csrf_token %}
+
+
+        <!-- NOME -->
+
+        <div class="form-grupo">
+
+            <label for="{{ form.nome.id_for_label }}">
+                Nome
+            </label>
+
+            {{ form.nome }}
+
+            {% if form.nome.errors %}
+
+                <div class="form-erro">
+                    {{ form.nome.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- E-MAIL -->
+
+        <div class="form-grupo">
+
+            <label for="{{ form.email.id_for_label }}">
+                E-mail
+            </label>
+
+            {{ form.email }}
+
+            {% if form.email.errors %}
+
+                <div class="form-erro">
+                    {{ form.email.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- NOTA -->
+
+        <div class="form-grupo">
+
+            <label for="{{ form.nota.id_for_label }}">
+                Nota
+            </label>
+
+            {{ form.nota }}
+
+            <small class="form-ajuda">
+                Dê uma nota de 1 a 10.
+            </small>
+
+            {% if form.nota.errors %}
+
+                <div class="form-erro">
+                    {{ form.nota.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- COMENTÁRIO -->
+
+        <div class="form-grupo">
+
+            <label for="{{ form.comentario.id_for_label }}">
+                Comentário
+            </label>
+
+            {{ form.comentario }}
+
+            {% if form.comentario.errors %}
+
+                <div class="form-erro">
+                    {{ form.comentario.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- BOTÃO -->
+
+        <button
+            type="submit"
+            class="btn-submit"
+        >
+            ⭐ Enviar avaliação
+        </button>
+
+    </form>
+
+</section>
+
+
+<!-- =====================================================
+     AVALIAÇÕES DOS USUÁRIOS
+     ===================================================== -->
+
+<section class="secao-avaliacoes">
+
+
+    <div class="secao-titulo">
+
+        <span class="section-label">
+            O QUE O PÚBLICO ACHOU
+        </span>
+
+        <h2>
+            Avaliações
+        </h2>
+
+        <p>
+
+            {{ avaliacoes.count }}
+
+            {% if avaliacoes.count == 1 %}
+
+                pessoa avaliou este filme.
+
+            {% else %}
+
+                pessoas avaliaram este filme.
+
+            {% endif %}
+
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         LISTA DE AVALIAÇÕES
+         ================================================= -->
+
+    <div class="avaliacoes-lista">
+
+
+        {% for avaliacao in avaliacoes %}
+
+            <article class="card-avaliacao">
+
+
+                <!-- CABEÇALHO -->
+
+                <div class="avaliacao-header">
+
+
+                    <div class="avaliacao-usuario">
+
+
+                        <!-- AVATAR -->
+
+                        <div class="avatar">
+
+                            {{ avaliacao.nome|first|upper }}
+
+                        </div>
+
+
+                        <!-- DADOS DO USUÁRIO -->
+
+                        <div class="usuario-info">
+
+                            <strong>
+                                {{ avaliacao.nome }}
+                            </strong>
+
+                            <span class="nota-usuario">
+                                ⭐ {{ avaliacao.nota }}/10
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     COMENTÁRIO
+                     ================================================= -->
+
+                <div class="avaliacao-corpo">
+
+                    <p>
+                        {{ avaliacao.comentario }}
+                    </p>
+
+                </div>
+
+
+            </article>
+
+        {% empty %}
+
+
+            <!-- =================================================
+                 SEM AVALIAÇÕES
+                 ================================================= -->
+
+            <div class="sem-avaliacoes">
+
+                <span>
+                    💬
+                </span>
+
+                <h3>
+                    Ainda não existem avaliações
+                </h3>
+
+                <p>
+                    Seja o primeiro a compartilhar
+                    sua opinião sobre este filme.
+                </p>
+
+            </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+</section>
+
+
+</main>
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+
+<footer class="site-footer">
+
+
+<p>
+    🎬 CineCatálogo
+</p>
+
+<span>
+    Filmes, avaliações e histórias.
+</span>
+
+
+</footer>
+
 </body>
+
 </html>

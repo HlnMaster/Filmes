@@ -13,23 +13,34 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+# ============================================================
+# CAMINHOS DO PROJETO
+# ============================================================
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# TESTE TEMPORÁRIO
+print("====================================")
+print("BASE_DIR =", BASE_DIR)
+print("STATIC =", os.path.join(BASE_DIR, 'static'))
+print("====================================")
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# ============================================================
+# CONFIGURAÇÕES BÁSICAS
+# ============================================================
+
 SECRET_KEY = 'django-insecure-$v#g_$q^g8g9)@g%&ms12ji&93ye47n5iit2*(ebk#-y=m(b7$'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
 
-# Application definition
+# ============================================================
+# APLICAÇÕES
+# ============================================================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -38,8 +49,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'FilmesApp',
 ]
+
+
+# ============================================================
+# MIDDLEWARE
+# ============================================================
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -51,13 +68,26 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+# ============================================================
+# URLS
+# ============================================================
+
 ROOT_URLCONF = 'Filmes.urls'
+
+
+# ============================================================
+# TEMPLATES
+# ============================================================
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+
         'DIRS': [],
+
         'APP_DIRS': True,
+
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
@@ -68,11 +98,17 @@ TEMPLATES = [
     },
 ]
 
+
+# ============================================================
+# WSGI
+# ============================================================
+
 WSGI_APPLICATION = 'Filmes.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+# ============================================================
+# BANCO DE DADOS
+# ============================================================
 
 DATABASES = {
     'default': {
@@ -82,8 +118,9 @@ DATABASES = {
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
+# ============================================================
+# VALIDAÇÃO DE SENHAS
+# ============================================================
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -101,8 +138,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
+# ============================================================
+# INTERNACIONALIZAÇÃO
+# ============================================================
 
 LANGUAGE_CODE = 'pt-br'
 
@@ -113,11 +151,22 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
+# ============================================================
+# ARQUIVOS ESTÁTICOS
+# ============================================================
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'Filmes' / 'static',
+]
+
+
+# ============================================================
+# ARQUIVOS DE MÍDIA
+# ============================================================
 
 MEDIA_URL = '/media/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+

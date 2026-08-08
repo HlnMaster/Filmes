@@ -1,40 +1,369 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+
     <meta charset="UTF-8">
-    <title>Catálogo de Filmes</title>
-    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>🎬 CineCatálogo</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/estilo.css' %}"
+    >
+
 </head>
+
+
 <body>
-    <div class="container">
-        <h1>🎬 Catálogo de Filmes</h1>
-        <div class="filtro-container">
-            <a href="{% url 'home' %}" class="filtro-btn {% if not genero_selecionado %}ativo{% endif %}">Todos</a>
-            {% for genero in generos %}
-                <a href="?genero={{ genero.id }}" class="filtro-btn {% if genero_selecionado == genero.id|stringformat:'s' %}ativo{% endif %}">
-                    {{ genero.nome }}
-                </a>
-            {% endfor %}
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="site-header">
+
+        <div class="header-content">
+
+            <a
+                href="{% url 'home' %}"
+                class="logo"
+            >
+                <span>🎬</span>
+                CineCatálogo
+            </a>
+
+            <span class="logo-subtitle">
+                SEU CATÁLOGO DE FILMES
+            </span>
+
         </div>
 
-        {% for filme in filmes %}
-            <div class="card-filme">
-                {% if filme.foto %}
-                    <img src="{{ filme.foto.url }}" alt="{{ filme.titulo }}">
-                {% else %}
-                    <img src="https://via.placeholder.com/180x260?text=Sem+Foto" alt="Sem Foto">
-                {% endif %}
-                <div class="card-conteudo">
-                    <h2>{{ filme.titulo }} <span class="genero-tag">{{ filme.genero.nome }}</span></h2>
-                    <p><strong>Ano:</strong> {{ filme.ano_lancamento }} | <strong>Duração:</strong> {{ filme.duracao_minutos }} min</p>
-                    <p>{{ filme.sinopse }}</p>
-                    <a href="{% url 'detalhes_filme' filme.id %}" class="btn-avaliar">⭐ Avaliar / Ver Avaliações</a>
-                </div>
+    </header>
+
+
+    <!-- =====================================================
+         CONTEÚDO PRINCIPAL
+         ===================================================== -->
+
+    <main class="container">
+
+
+        <!-- =================================================
+             HERO
+             ================================================= -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <span class="hero-label">
+                    🎥 CATÁLOGO DE FILMES
+                </span>
+
+                <h1>
+                    Encontre seu próximo
+                    <span>filme favorito.</span>
+                </h1>
+
+                <p>
+                    Explore filmes, conheça suas histórias
+                    e compartilhe sua opinião.
+                </p>
+
             </div>
-        {% empty %}
-            <p style="text-align: center;">Nenhum filme cadastrado neste gênero.</p>
-        {% endfor %}
-    </div>
+
+        </section>
+
+
+        <!-- =================================================
+             FILTROS POR GÊNERO
+             ================================================= -->
+
+        <section class="filtros-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        EXPLORAR
+                    </span>
+
+                    <h2>
+                        Filmes por gênero
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="filtro-container">
+
+
+                <!-- TODOS -->
+
+                <a
+                    href="{% url 'home' %}"
+                    class="filtro-btn {% if not genero_selecionado %}ativo{% endif %}"
+                >
+                    Todos
+                </a>
+
+
+                <!-- GÊNEROS DO BANCO -->
+
+                {% for genero in generos %}
+
+                    <a
+                        href="?genero={{ genero.id }}"
+                        class="filtro-btn {% if genero_selecionado == genero.id|stringformat:'s' %}ativo{% endif %}"
+                    >
+                        {{ genero.nome }}
+                    </a>
+
+                {% endfor %}
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             FILMES
+             ================================================= -->
+
+        <section class="filmes-section">
+
+
+            <!-- CABEÇALHO -->
+
+            <div class="filmes-heading">
+
+                <h2>
+
+                    {% if genero_selecionado %}
+
+                        Filmes selecionados
+
+                    {% else %}
+
+                        Todos os filmes
+
+                    {% endif %}
+
+                </h2>
+
+
+                <span>
+
+                    {{ filmes|length }}
+
+                    {% if filmes|length == 1 %}
+
+                        filme
+
+                    {% else %}
+
+                        filmes
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+            <!-- GRID DE FILMES -->
+
+            <div class="filmes-grid">
+
+
+                {% for filme in filmes %}
+
+
+                    <!-- =====================================
+                         CARD DO FILME
+                         ===================================== -->
+
+                    <article class="filme-card">
+
+
+                        <!-- =================================
+                             POSTER
+                             ================================= -->
+
+                        <div class="poster-wrapper">
+
+
+                            {% if filme.foto %}
+
+                                <img
+                                    src="{{ filme.foto.url }}"
+                                    alt="Pôster de {{ filme.titulo }}"
+                                    class="filme-poster"
+                                    loading="lazy"
+                                >
+
+                            {% else %}
+
+                                <div class="poster-placeholder">
+
+                                    <span>🎬</span>
+
+                                    <small>
+                                        Sem imagem
+                                    </small>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- OVERLAY -->
+
+                            <div class="poster-overlay">
+
+                                <a
+                                    href="{% url 'detalhes_filme' filme.id %}"
+                                    class="btn-ver-filme"
+                                >
+                                    Ver filme
+                                </a>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- =================================
+                             INFORMAÇÕES
+                             ================================= -->
+
+                        <div class="filme-info">
+
+
+                            <!-- GÊNERO -->
+
+                            <span class="filme-genero">
+                                {{ filme.genero.nome }}
+                            </span>
+
+
+                            <!-- TÍTULO -->
+
+                            <h3>
+                                {{ filme.titulo }}
+                            </h3>
+
+
+                            <!-- ANO E DURAÇÃO -->
+
+                            <div class="filme-dados">
+
+                                <span>
+                                    📅 {{ filme.ano_lancamento }}
+                                </span>
+
+                                <span>
+                                    ⏱ {{ filme.duracao_minutos }} min
+                                </span>
+
+                            </div>
+
+
+                            <!-- SINOPSE -->
+
+                            <p>
+                                {{ filme.sinopse }}
+                            </p>
+
+
+                            <!-- BOTÃO -->
+
+                            <a
+                                href="{% url 'detalhes_filme' filme.id %}"
+                                class="btn-avaliar"
+                            >
+                                ⭐ Avaliar filme
+                            </a>
+
+
+                        </div>
+
+
+                    </article>
+
+
+                {% empty %}
+
+
+                    <!-- =====================================
+                         NENHUM FILME
+                         ===================================== -->
+
+                    <div class="nenhum-filme">
+
+                        <span>🎬</span>
+
+                        <h2>
+                            Nenhum filme encontrado
+                        </h2>
+
+                        <p>
+                            Não existem filmes cadastrados
+                            neste gênero.
+                        </p>
+
+                        <a
+                            href="{% url 'home' %}"
+                            class="btn-avaliar"
+                        >
+                            Ver todos os filmes
+                        </a>
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="site-footer">
+
+        <p>
+            🎬 CineCatálogo
+        </p>
+
+        <span>
+            Filmes, avaliações e histórias.
+        </span>
+
+    </footer>
+
+
 </body>
+
 </html>
